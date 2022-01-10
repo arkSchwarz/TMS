@@ -6,39 +6,6 @@ import java.sql.*;
 public class test {
 
 
-    public void READ() throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=Test;integratedSecurity=true;");
-
-        Statement m_Statement = conn.createStatement();
-        String query = "SELECT ALL * FROM [User] WHERE user_id='3'";
-
-        ResultSet m_ResultSet = m_Statement.executeQuery(query);
-
-        while (m_ResultSet.next()) {
-            System.out.println(m_ResultSet.getString(1) + ", " + m_ResultSet.getString(2) + ", " + m_ResultSet.getString(3) +
-                    ","+m_ResultSet.getString(4) + "," + m_ResultSet.getString(5));
-        }
-
-
-    }
-
-    public void WRITE() throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=Test;integratedSecurity=true;");
-
-        String sql = "INSERT INTO [User] (type, mail, password, name_surname) VALUES (?, ?, ?, ?)";
-
-        PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, "Employee");
-        statement.setString(2, "david28@hotmail.com");
-        statement.setString(3, "9696");
-        statement.setString(4, "David Beckhem");
-
-        int rowsInserted = statement.executeUpdate();
-        if (rowsInserted > 0) {
-            System.out.println("A new user was inserted successfully!");
-        }
-
-    }
 
     public void UPTADE() throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=Test;integratedSecurity=true;");
@@ -74,7 +41,7 @@ public class test {
 
     }
 
-    public static void main(String[] args) {
+     static void main(String[] args) {
 
         Connection conn = null;
 
