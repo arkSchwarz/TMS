@@ -79,7 +79,7 @@ public class DB {
     public static void READ_SPECIFIC_NOTES(Connection conn,String note_id) throws SQLException {
 
         Statement m_Statement = conn.createStatement();
-        String query = "SELECT ALL * FROM [Note_] WHERE user_id="+note_id;
+        String query = "SELECT ALL * FROM [Note_] WHERE note_id="+note_id;
 
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
@@ -108,17 +108,20 @@ public class DB {
 
     }
 
-    public static void WRITE_TASK(Connection conn,String project_name,String group_name,String manager_id,int priority, String status, String deadline, String description, String employee_id) throws SQLException {
+    public static void WRITE_TASK(Connection conn,String project_name,String group_name,String manager_id,int priority, String status, String deadline, String description, String employee_id) throws SQLException{
 
         String sql = "INSERT INTO [Task] (project_name, group_name, manager_id, priority, status, deadline, description, employee_id) VALUES (?, ?, ?, ?, ? ,? ,? ,?)";
 
+
+        Date date = java.sql.Date.valueOf(deadline);
+
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(0, project_name);
-        statement.setString(1, group_name);
+        statement.setString(1, project_name);
+        statement.setString(2, group_name);
         statement.setString(3, manager_id);
         statement.setFloat(4, priority);
         statement.setString(5, status);
-        statement.setString(6, deadline);
+        statement.setDate(6, date);
         statement.setString(7, description);
         statement.setString(8, employee_id);
 
@@ -131,10 +134,10 @@ public class DB {
 
     public static void WRITE_NOTE(Connection conn,String group_id, String note_text) throws SQLException {
 
-        String sql = "INSERT INTO [User] (group_id, note_text) VALUES (?, ?)";
+        String sql = "INSERT INTO [Note_] (group_id, note_text) VALUES (?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(0, group_id);
+        statement.setString(1, group_id);
         statement.setString(2, note_text);
 
 
@@ -164,21 +167,22 @@ public class DB {
 
     }
 
-    public static void UPTADE_TASK(Connection conn,String project_name,String group_name,String manager_id,int priority, String status, String deadline, String description, String employee_id) throws SQLException {
+    public static void UPTADE_TASK(Connection conn,String project_name,String group_name,String manager_id,int priority, String status, String deadline, String description, String employee_id) throws SQLException{
 
         String sql = "UPDATE [User] SET project_name=?, group_name=?,  manager_id=?, priority=?, status=?, deadline=?, description=?, employee_id=?";
 
+        Date date = java.sql.Date.valueOf(deadline);
+
         PreparedStatement statement = conn.prepareStatement(sql);
 
-        statement.setString(0, project_name);
-        statement.setString(1, group_name);
+        statement.setString(1, project_name);
+        statement.setString(2, group_name);
         statement.setString(3, manager_id);
         statement.setFloat(4, priority);
         statement.setString(5, status);
-        statement.setString(6, deadline);
+        statement.setDate(6, date);
         statement.setString(7, description);
         statement.setString(8, employee_id);
-
         int rowsUpdated = statement.executeUpdate();
         if (rowsUpdated > 0) {
             System.out.println("An existing task was updated successfully!");
@@ -188,11 +192,11 @@ public class DB {
 
     public static void UPTADE_NOTE(Connection conn,String group_id, String note_text) throws SQLException {
 
-        String sql = "UPDATE [User] SET group_id=?, note_text=?";
+        String sql = "UPDATE [Note_] SET group_id=?, note_text=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
 
-        statement.setString(0, group_id);
+        statement.setString(1, group_id);
         statement.setString(2, note_text);
 
         int rowsUpdated = statement.executeUpdate();
@@ -218,7 +222,7 @@ public class DB {
     }
 
     public static void DELETE_TASK(Connection conn, String task_id) throws SQLException {
-        String sql = "DELETE FROM [User] WHERE user_id="+task_id;
+        String sql = "DELETE FROM [Task] WHERE task_id="+task_id;
 
         PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -231,7 +235,7 @@ public class DB {
     }
 
     public static void DELETE_NOTES(Connection conn, String note_id) throws SQLException {
-        String sql = "DELETE FROM [User] WHERE user_id="+note_id;
+        String sql = "DELETE FROM [Notes] WHERE note_id="+note_id;
 
         PreparedStatement statement = conn.prepareStatement(sql);
 
