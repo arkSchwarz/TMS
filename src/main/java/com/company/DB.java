@@ -108,6 +108,7 @@ public class DB {
 
     }
 
+                                                                                                                                        /*yyyy-mm-dd*/
     public static void WRITE_TASK(Connection conn,String project_name,String group_name,String manager_id,int priority, String status, String deadline, String description, String employee_id) throws SQLException{
 
         String sql = "INSERT INTO [Task] (project_name, group_name, manager_id, priority, status, deadline, description, employee_id) VALUES (?, ?, ?, ?, ? ,? ,? ,?)";
