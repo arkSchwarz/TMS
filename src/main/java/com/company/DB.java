@@ -145,7 +145,6 @@ public class DB {
     }
 
     public void UPTADE_USER(Connection conn) throws SQLException {
-         conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=Test;integratedSecurity=true;");
 
         String sql = "UPDATE [User] SET type=?, mail=?, password=?, name_surname =? WHERE user_id='1'";
 
@@ -163,10 +162,11 @@ public class DB {
 
     }
 
-    public void DELETE_USER(Connection conn) throws SQLException {
-        conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=Test;integratedSecurity=true;");
 
-        String sql = "DELETE FROM [User] WHERE user_id='1'";
+
+    public void DELETE_USER(Connection conn, String user_id) throws SQLException {
+
+        String sql = "DELETE FROM [User] WHERE user_id="+user_id;
 
         PreparedStatement statement = conn.prepareStatement(sql);
 
@@ -177,4 +177,32 @@ public class DB {
         }
 
     }
+
+    public void DELETE_TASK(Connection conn, String task_id) throws SQLException {
+        String sql = "DELETE FROM [User] WHERE user_id="+task_id;
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+
+
+        int rowsDeleted = statement.executeUpdate();
+        if (rowsDeleted > 0) {
+            System.out.println("A user was deleted successfully!");
+        }
+
+    }
+
+    public void DELETE_NOTES(Connection conn, String note_id) throws SQLException {
+        String sql = "DELETE FROM [User] WHERE user_id="+note_id;
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+
+
+        int rowsDeleted = statement.executeUpdate();
+        if (rowsDeleted > 0) {
+            System.out.println("A user was deleted successfully!");
+        }
+
+    }
+
+
 }
