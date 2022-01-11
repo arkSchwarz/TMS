@@ -44,7 +44,6 @@ public class DB {
         }
     }
 
-
     public static void READ_SPECIFIC_TASK(Connection conn,String project_name,String group_name) throws SQLException {
 
         Statement m_Statement = conn.createStatement();
@@ -89,8 +88,6 @@ public class DB {
 
     }
 
-
-
     public static void WRITE_USER(Connection conn,String type,String mail,String password,String Name_Surname) throws SQLException {
 
         String sql = "INSERT INTO [User] (type, mail, password, name_surname) VALUES (?, ?, ?, ?)";
@@ -107,7 +104,6 @@ public class DB {
         }
 
     }
-
                                                                                                                                         /*yyyy-mm-dd*/
     public static void WRITE_TASK(Connection conn,String project_name,String group_name,String manager_id,int priority, String status, String deadline, String description, String employee_id) throws SQLException{
 
@@ -148,7 +144,6 @@ public class DB {
         }
 
     }
-
 
     public static void UPTADE_USER(Connection conn,String type,String mail,String password,String Name_Surname) throws SQLException {
 
@@ -206,7 +201,6 @@ public class DB {
         }
 
     }
-
 
     public static void DELETE_USER(Connection conn, String user_id) throws SQLException {
 
