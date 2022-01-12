@@ -36,6 +36,7 @@ public class Main {
                 case 1: // Log in
                     while (true) {
                         ArrayList<String> username_password = Menu.logInMenu();
+
                         if (username_password == null) // Bir üst menüye çıkılmak isteniyor
                             break;
                         ArrayList<String> username_infos = DB.check_mail_password(username_password);
@@ -123,7 +124,7 @@ public class Main {
                                             System.out.print("Enter priority of task: ");
                                             int priority = scanner_int.nextInt();
 
-                                            System.out.print("Enter deadline of task as DD-MM-YYYY: ");
+                                            System.out.print("Enter deadline of task as YYYY-MM-DD: ");
                                             String deadline = scanner_string.nextLine();
 
                                             System.out.print("Enter description of task: ");

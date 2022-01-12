@@ -20,20 +20,18 @@ public class DB {
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
 
-        if (mail_password.get(0).equalsIgnoreCase(""))
-            return null;
-
-        if(!m_ResultSet.next())
-            return null;
-        else{
-            while (m_ResultSet.next()) {
+        if(m_ResultSet.next())
+            do {
                 projects.add(m_ResultSet.getString(1));
                 projects.add(m_ResultSet.getString(2));
                 projects.add(m_ResultSet.getString(3));
                 projects.add(m_ResultSet.getString(4));
                 projects.add(m_ResultSet.getString(5));
                 projects.add(m_ResultSet.getString(6));
-            }
+
+            }while(m_ResultSet.next());
+        else{
+            return null;
         }
 
         return projects;
@@ -61,8 +59,16 @@ public class DB {
 
         String sql = "INSERT INTO [User] (type, mail, password, project_name, group_name) VALUES (?, ?, ?, ?, ?)";
 
+        String query = "SELECT * FROM [User] WHERE project_name="+"'"+register_infos.get(3)+"'"+" AND group_name="+"'"+register_infos.get(4)+"'";
+
+
+
+
+        Statement m_Statement = conn.createStatement();
 
         PreparedStatement statement = conn.prepareStatement(sql);
+        ResultSet m_ResultSet = m_Statement.executeQuery(query);
+
         statement.setString(1, register_infos.get(0));
         statement.setString(2, register_infos.get(1));
         statement.setString(3, register_infos.get(2));
@@ -74,6 +80,22 @@ public class DB {
         if (rowsInserted > 0) {
             System.out.println("A new user was inserted successfully!");
         }
+
+        int manager_id = -1;
+
+        if(m_ResultSet.next()){
+            manager_id = m_ResultSet.getInt(1);
+        }
+
+
+        if (register_infos.get(0).equalsIgnoreCase("M")){
+
+            String project_name = register_infos.get(3);
+            String group_name = register_infos.get(4);
+
+            DB.create_project_group(project_name, group_name, manager_id);
+        }
+
 
     }
 
@@ -88,9 +110,9 @@ public class DB {
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
         if(m_ResultSet.next()){
-            while (m_ResultSet.next()) {
+            do{
                 projects.add(m_ResultSet.getString(1));
-            }
+            }while(m_ResultSet.next());
         }
 
 
@@ -254,7 +276,7 @@ public class DB {
 
         String taskid = String.valueOf(task_id);
         Statement m_Statement = conn.createStatement();
-        String query = "SELECT * FROM [Task] WHERE task_id="+"'"+taskid+"'"+"AND project_name=group_name AND employee_id='0'";
+        String query = "SELECT * FROM [Task] WHERE task_id="+taskid+" AND project_name=" +"'"+project_name +"'"+" AND group_name="+"'"+group_name +"'"+" AND employee_id=-1";
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
         return m_ResultSet.next();
@@ -331,7 +353,7 @@ public class DB {
         Statement m_Statement = conn.createStatement();
         String managerid = String.valueOf(manager_id);
 
-        String query = "SELECT * FROM [Note_] WHERE project_name=" +"'"+managerid+"'";
+        String query = "SELECT * FROM [Task] WHERE manager_id=" +"'"+managerid+"'";
 
 
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
@@ -414,7 +436,8 @@ public class DB {
         // verilen bilgilere bağlı olarak note yaratabilirsin diye düşünüyorum
         Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
 
-        String sql = "INSERT INTO [Note_] (group_id, note_text) VALUES (?, ?)";
+        String sql = "INSERT INTO [Note_] (group_name, project_name, note_text) VALUES (?, ?, ?)";
+        //String sql = "INSERT INTO [Note_] (" + group_name+ ", " + project_name + ", " + note_text + ") VALUES (?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1, group_name);
@@ -438,12 +461,13 @@ public class DB {
 
         Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
 
-        String query = "SELECT ALL * FROM [Note_] WHERE note_id=" +"'"+ noteid +"'"+ " AND project_name=" +"'"+ project_name +"'"+ " AND group_name=" +"'"+ group_name+"'";
+        String query = "DELETE FROM [Note_] WHERE note_id=" +"'"+ noteid +"'"+ " AND project_name=" +"'"+ project_name +"'"+ " AND group_name=" +"'"+ group_name+"'";
 
         PreparedStatement statement = conn.prepareStatement(query);
 
 
         int rowsDeleted = statement.executeUpdate();
+
         if (rowsDeleted > 0) {
             return true;
 
@@ -477,6 +501,45 @@ public class DB {
     }
 
 
+    public static void create_project_group(String group_name, String project_name, int manager_id) throws SQLException {
+        // Her ne kadar yaratmak Alah'a mahsus olsa da sen de çok güzel bir şekilde
+        // verilen bilgilere bağlı olarak note yaratabilirsin diye düşünüyorum
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+
+        String sql = "INSERT INTO [Project_Group] (project_name, group_name, manager_id) VALUES (?, ?, ?)";
+
+        String manageid = String.valueOf(manager_id);
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+        statement.setString(1, group_name);
+        statement.setString(2, project_name);
+        statement.setString(3, manageid);
+
+
+        int rowsInserted = statement.executeUpdate();
+        if (rowsInserted > 0) {
+            System.out.println("A new Project was inserted successfully!");
+        }
+    }
+
+    public static void take_a_task(int task_id, int employee_id) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+
+        String taskid = String.valueOf(task_id);
+
+
+        String query = "UPDATE [Task] SET employee_id=? WHERE task_id="+"'"+taskid+"'";
+
+        PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+        preparedStatement.setInt(1, employee_id);
+
+
+        int rowsUpdated = preparedStatement.executeUpdate();
+
+
+
+    }
 
 
 
