@@ -67,6 +67,7 @@ public class DB {
         Statement m_Statement = conn.createStatement();
 
         PreparedStatement statement = conn.prepareStatement(sql);
+
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
         statement.setString(1, register_infos.get(0));
@@ -420,11 +421,32 @@ public class DB {
 
         String sql = "UPDATE [Task] SET priority=?, deadline=?, description=? WHERE task_id="+"'"+taskid+"'"+" AND manager_id="+"'"+managerid+"'";
 
+        String query = "SELECT * FROM [Task] WHERE task_id="+taskid+" AND manager_id="+managerid;
+
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-        preparedStatement.setString(1, newpriority);
-        preparedStatement.setString(2, new_deadline);
-        preparedStatement.setString(3, new_description);
+
+        Statement m_Statement = conn.createStatement();
+        ResultSet m_ResultSet = m_Statement.executeQuery(query);
+
+        if(m_ResultSet.next()) {
+
+            if (new_priority.equalsIgnoreCase("-")) {
+                preparedStatement.setString(1, m_ResultSet.getString(5));
+            } else
+                preparedStatement.setString(1, new_priority);
+
+            if (new_deadline.equalsIgnoreCase("-")) {
+                preparedStatement.setString(2, m_ResultSet.getString(7));
+            } else
+                preparedStatement.setString(2, new_deadline);
+
+            if (new_description.equalsIgnoreCase("-")) {
+                preparedStatement.setString(3, m_ResultSet.getString(8));
+            } else
+                preparedStatement.setString(3, new_description);
+
+        }
 
         int rowsUpdated = preparedStatement.executeUpdate();
         return rowsUpdated > 0;
@@ -477,11 +499,14 @@ public class DB {
     }
 
 
-
     public static boolean update_note(String group_name, String project_name, int note_id, String new_text) throws SQLException {
 
         //Eğer verilen note_id'ye sahip bir note varsa ve grup'la proje'de uyuşuyorsa new_text ile update et ve true döndür
         // diğer durumlarda false döndür
+
+        if(new_text.equalsIgnoreCase("-")){
+            return true;
+        }
 
         String noteid = String.valueOf(note_id);
 
@@ -489,11 +514,11 @@ public class DB {
 
         Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
 
-        String sql = "UPDATE [Note_] SET note_text=?,WHERE project_name="+"'"+project_name+"'"+" AND note_id="+"'"+noteid+"'";
+        String sql = "UPDATE [Note_] SET note_text=? WHERE project_name="+"'"+project_name+"'"+" AND note_id="+noteid;
 
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-        preparedStatement.setString(1, noteid);
+        preparedStatement.setString(1, new_text);
 
 
         int rowsUpdated = preparedStatement.executeUpdate();
