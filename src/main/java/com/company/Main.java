@@ -145,9 +145,9 @@ public class Main {
                                             int choice_task = scanner_int.nextInt();
 
                                             System.out.print("Enter new priority of task (to keep same put '-' character): ");
-                                            int new_priority = scanner_int.nextInt();
+                                            String new_priority = scanner_string.nextLine();
 
-                                            System.out.print("Enter new deadline of task as DD-MM-YYYY (to keep same put '-' character):");
+                                            System.out.print("Enter new deadline of task as YYYY-MM-DD (to keep same put '-' character):");
                                             String new_deadline = scanner_string.nextLine();
 
                                             System.out.print("Enter new description of task (to keep same put '-' character):");

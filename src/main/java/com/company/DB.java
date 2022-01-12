@@ -408,11 +408,11 @@ public class DB {
     }
 
 
-    public static boolean update_task(int task_id, int manager_id, int new_priority, String new_deadline, String new_description) throws SQLException {
+    public static boolean update_task(int task_id, int manager_id, String new_priority, String new_deadline, String new_description) throws SQLException {
         //Eğer verilen task_id'ye sahip bir task varsa ve manager_id'si manager_id'ye eşitse update et ve true döndür
         // diğer durumlarda false döndür
 
-        String newpriority = String.valueOf(new_priority);
+
         String taskid = String.valueOf(task_id);
         String managerid = String.valueOf(manager_id);
 
