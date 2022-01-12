@@ -15,7 +15,7 @@ public class DB {
         ArrayList<String> projects = new ArrayList<String>();
 
         Statement m_Statement = conn.createStatement();
-        String query = "SELECT ALL * FROM [User] WHERE mail="+"'"+mail_password.get(0)+"'"+"AND password="+"'"+mail_password.get(1)+"'";
+        String query = "SELECT ALL * FROM [User] WHERE mail="+"'"+mail_password.get(0)+"'"+" AND password="+"'"+mail_password.get(1)+"'";
 
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
@@ -128,7 +128,7 @@ public class DB {
         ArrayList<String> projects = new ArrayList<String>();
 
         Statement m_Statement = conn.createStatement();
-        String query = "SELECT DISTINCT project_name FROM [Project_Group] WHERE project_name="+"'"+project_name+"'";
+        String query = "SELECT DISTINCT group_name FROM [Project_Group] WHERE project_name="+"'"+project_name+"'";
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
         while (m_ResultSet.next()) {
@@ -243,7 +243,7 @@ public class DB {
         String employeeid = String.valueOf(employee_id);
 
         Statement m_Statement = conn.createStatement();
-        String query = "SELECT * FROM [Task] WHERE employe_id="+"'"+employeeid+"'"+" AND task_id="+"'"+taskid+"'";
+        String query = "SELECT * FROM [Task] WHERE employee_id="+employeeid+" AND task_id="+taskid;
         ResultSet m_ResultSet = m_Statement.executeQuery(query);
 
         return m_ResultSet.next();

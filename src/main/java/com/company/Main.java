@@ -93,6 +93,9 @@ public class Main {
                                                         "Or you are not in that group/project!");
                                                 break;
                                             }
+                                            else{
+                                                DB.take_a_task(task_choice_2, user_id);
+                                            }
 
                                             break;
                                         case 4: // Show All Tasks of My Group
