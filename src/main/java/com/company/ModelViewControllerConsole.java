@@ -8,31 +8,32 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /*
-* Enes Güler 18050111005
-* Yakup Batuhan Ördek 18050111041
-* */
+ * Enes Güler 18050111005
+ * Yakup Batuhan Ördek 18050111041
+ * */
 
 public class ModelViewControllerConsole {
 
 
-
-
-
     public static void show_tasks_table(ArrayList<ArrayList<String>> tasks) {
-        System.out.println("\n[task_id]\t\t" +
-                "[priority]\t\t[status]\t\t[deadline]\t\t[description]");
+        System.out.printf("\n%-10s %-10s %-15s %-15s %-40s\n", "[task_id]", "[priority]", "[status]", "[deadline]", "[description]");
+        // System.out.println("\n[task_id]\t\t" +
+        //        "[priority]\t\t[status]\t\t[deadline]\t\t[description]");
         System.out.println("----------------------------------------------------------------------------------------------");
         for (ArrayList<String> task : tasks) {
-            System.out.println(task.get(0) + "\t\t" +
-                    task.get(4) + "\t\t" + task.get(5) + "\t\t" + task.get(6) + "\t\t" + task.get(7));
+            System.out.printf("%-10s %-10s %-15s %-15s %-40s\n", task.get(0), task.get(4), task.get(5), task.get(6), task.get(7));
+            // System.out.println(task.get(0) + "\t\t" +
+            //        task.get(4) + "\t\t" + task.get(5) + "\t\t" + task.get(6) + "\t\t" + task.get(7));
         }
     }
 
     public static void show_notes_table(ArrayList<ArrayList<String>> notes) {
-        System.out.println("\n[note_id]\t\t[note_text]");
+        System.out.printf("%-10s %-40s\n", "[note_id]", "[note_text]");
+        //System.out.println("\n[note_id]\t\t[note_text]");
         System.out.println("-------------------------------------------------------------");
         for (ArrayList<String> note : notes) {
-            System.out.println(note.get(0) + "\t\t" + note.get(3));
+            System.out.printf("%-10s %-40s\n", note.get(0), note.get(3));
+            //System.out.println(note.get(0) + "\t\t" + note.get(3));
         }
     }
 
@@ -103,8 +104,7 @@ public class ModelViewControllerConsole {
                                                 System.out.println("You can not take choice task. Because it is already taken by someone else! " +
                                                         "Or you are not in that group/project!");
                                                 break;
-                                            }
-                                            else{
+                                            } else {
                                                 DB.take_a_task(task_choice_2, user_id);
                                             }
 
@@ -130,10 +130,10 @@ public class ModelViewControllerConsole {
 
                             if (type.equalsIgnoreCase("M")) {
                                 int choice = 0;
-                                while (choice != 9){
+                                while (choice != 9) {
                                     choice = MainMenuView.showMainMenu_forManager();
 
-                                    switch (choice){
+                                    switch (choice) {
                                         case 1: // Create a Task
                                             System.out.print("Enter priority of task: ");
                                             int priority = scanner_int.nextInt();
@@ -144,12 +144,12 @@ public class ModelViewControllerConsole {
                                             System.out.print("Enter description of task: ");
                                             String description = scanner_string.nextLine();
 
-                                            DB.create_task(project_name, group_name, user_id, priority, "not done",deadline, description, -1);
+                                            DB.create_task(project_name, group_name, user_id, priority, "not done", deadline, description, -1);
 
                                             break;
                                         case 2: // Update a Task
                                             System.out.println("\nChose a task to update it\n");
-                                            ArrayList<ArrayList<String>> tasks =  DB.all_tasks_filtered_by_manager_id(user_id);
+                                            ArrayList<ArrayList<String>> tasks = DB.all_tasks_filtered_by_manager_id(user_id);
                                             show_tasks_table(tasks);
 
                                             System.out.print("Choice:");
@@ -164,14 +164,14 @@ public class ModelViewControllerConsole {
                                             System.out.print("Enter new description of task (to keep same put '-' character):");
                                             String new_description = scanner_string.nextLine();
 
-                                            if (!DB.update_task(choice_task, user_id,new_priority, new_deadline, new_description))
+                                            if (!DB.update_task(choice_task, user_id, new_priority, new_deadline, new_description))
                                                 System.out.println("You can not update choiced task. Or there is no task with that id!");
 
 
                                             break;
                                         case 3: // Delete a Task
                                             System.out.println("\nChose a task to delete it\n");
-                                            ArrayList<ArrayList<String>> tasks_2 =  DB.all_tasks_filtered_by_manager_id(user_id);
+                                            ArrayList<ArrayList<String>> tasks_2 = DB.all_tasks_filtered_by_manager_id(user_id);
                                             show_tasks_table(tasks_2);
 
                                             System.out.print("Choice:");
@@ -183,7 +183,7 @@ public class ModelViewControllerConsole {
 
                                             break;
                                         case 4: // Show All Tasks That I Created
-                                            ArrayList<ArrayList<String>> tasks_3 =  DB.all_tasks_filtered_by_manager_id(user_id);
+                                            ArrayList<ArrayList<String>> tasks_3 = DB.all_tasks_filtered_by_manager_id(user_id);
                                             show_tasks_table(tasks_3);
 
                                             break;
