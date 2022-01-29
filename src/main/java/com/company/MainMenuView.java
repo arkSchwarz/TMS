@@ -3,7 +3,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Menu {
+public class MainMenuView {
 
     private static final Scanner scanner_int = new Scanner(System.in);
     private static final Scanner scanner_string = new Scanner(System.in);

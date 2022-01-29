@@ -4,6 +4,7 @@ package com.company;
 import java.sql.*;
 import java.util.ArrayList;
 
+/*This is just a test class*/
 
 public class test {
 

@@ -1,11 +1,22 @@
 package com.company;
 
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
+/*
+* Enes Güler 18050111005
+* Yakup Batuhan Ördek 18050111041
+* */
+
+public class ModelViewControllerConsole {
+
+
+
+
 
     public static void show_tasks_table(ArrayList<ArrayList<String>> tasks) {
         System.out.println("\n[task_id]\t\t" +
@@ -31,11 +42,11 @@ public class Main {
 
         int loginsignin_choice;
         do {
-            loginsignin_choice = Menu.logIn_signInMenu();
+            loginsignin_choice = MainMenuView.logIn_signInMenu();
             switch (loginsignin_choice) {
                 case 1: // Log in
                     while (true) {
-                        ArrayList<String> username_password = Menu.logInMenu();
+                        ArrayList<String> username_password = MainMenuView.logInMenu();
 
                         if (username_password == null) // Bir üst menüye çıkılmak isteniyor
                             break;
@@ -55,7 +66,7 @@ public class Main {
                             if (type.equalsIgnoreCase("E")) {
                                 int choice = 0;
                                 while (choice != 6) {
-                                    choice = Menu.showMainMenu_forEmployee();
+                                    choice = MainMenuView.showMainMenu_forEmployee();
 
                                     switch (choice) {
                                         case 1: // Show My Tasks
@@ -120,7 +131,7 @@ public class Main {
                             if (type.equalsIgnoreCase("M")) {
                                 int choice = 0;
                                 while (choice != 9){
-                                    choice = Menu.showMainMenu_forManager();
+                                    choice = MainMenuView.showMainMenu_forManager();
 
                                     switch (choice){
                                         case 1: // Create a Task
@@ -229,7 +240,7 @@ public class Main {
                     break;
 
                 case 2: // Sign in
-                    ArrayList<String> register_infos = Menu.signInMenu();
+                    ArrayList<String> register_infos = MainMenuView.signInMenu();
                     if (register_infos == null) // bir üst menüye çıkılmak isteniyor
                         break;
                     DB.create_user(register_infos);

@@ -4,13 +4,14 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class DB {
+    static String port = "49732";
 
 
     public static ArrayList<String> check_mail_password(ArrayList<String> mail_password) throws SQLException {
         // username_password'in 0. indexi mail, 1. indexi password
         // DB'de sorgula böyle biri varmı yok mu diye. Eğer varsa bütün colonları arraylist içinde dönder.
         // Yoksa null dönder
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         ArrayList<String> projects = new ArrayList<String>();
 
@@ -37,25 +38,9 @@ public class DB {
         return projects;
     }
 
-    public static String RETURN_SPECIFIC_USER(String user_id) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
-        Statement m_Statement = conn.createStatement();
-        String query = "SELECT ALL * FROM [User] WHERE user_id="+"'"+user_id+"'";
-
-        ResultSet m_ResultSet = m_Statement.executeQuery(query);
-        String a = "";
-
-        while (m_ResultSet.next()) {
-            System.out.println(m_ResultSet.getString(1) + ", " + m_ResultSet.getString(2) + ", " + m_ResultSet.getString(3) +
-                    "," + m_ResultSet.getString(4) + "," + m_ResultSet.getString(5) + " " + m_ResultSet.getString(6));
-        }
-
-        return a;
-    }
-
     public static void create_user(ArrayList<String> register_infos) throws SQLException {
         // Verdiğim kolon bilgileriyle yeni bir user yarat
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String sql = "INSERT INTO [User] (type, mail, password, project_name, group_name) VALUES (?, ?, ?, ?, ?)";
 
@@ -100,10 +85,12 @@ public class DB {
 
     }
 
+    
+
     public static ArrayList<String> distinct_all_project_names() throws SQLException {
         // bütün distinct project_name'lerin listesini dönder
         // eğer hiç proje yoksa içi boş bir arraylist dönder
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
         ArrayList<String> projects = new ArrayList<String>();
 
         Statement m_Statement = conn.createStatement();
@@ -124,7 +111,7 @@ public class DB {
         // Project_Group tablosu üzerinde WHERE project_name == project_name olan bütün group_name'leri
         // arraylist olarak distinc bir şekilde dönder. Eğer group yoksa içi boş arraylist dönder
 
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         ArrayList<String> projects = new ArrayList<String>();
 
@@ -143,7 +130,7 @@ public class DB {
         // Verilen isimde bir proje daha önceden tabloda var mı diye kontrol et
         // Eğer varsa true, yoksa false dönder
 
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         ArrayList<String> projects = new ArrayList<String>();
 
@@ -157,7 +144,7 @@ public class DB {
     public static boolean is_group_exist_in_project(String project_name, String group_name) throws SQLException {
         // Verilen isimde bir proje ve grup daha önceden tabloda var mı diye kontrol et
         // Eğer varsa true, yoksa false dönder
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         Statement m_Statement = conn.createStatement();
         String query = "SELECT ALL * FROM [Project_Group] WHERE project_name="+"'"+project_name+"'"+ "AND group_name="+"'"+group_name+"'";
@@ -167,9 +154,35 @@ public class DB {
 
     }
 
+    public static void create_project_group(String group_name, String project_name, int manager_id) throws SQLException {
+        // Her ne kadar yaratmak Alah'a mahsus olsa da sen de çok güzel bir şekilde
+        // verilen bilgilere bağlı olarak note yaratabilirsin diye düşünüyorum
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
+
+        String sql = "INSERT INTO [Project_Group] (project_name, group_name, manager_id) VALUES (?, ?, ?)";
+
+        String manageid = String.valueOf(manager_id);
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+        statement.setString(1, group_name);
+        statement.setString(2, project_name);
+        statement.setString(3, manageid);
+
+
+        int rowsInserted = statement.executeUpdate();
+        if (rowsInserted > 0) {
+            System.out.println("A new Project was inserted successfully!");
+        }
+    }
+
+
+
+
+
+
     public static ArrayList<ArrayList<String>> show_all_tasks_filtered_by_employee_id(int employee_id) throws SQLException {
         // task tablosunda verilen employee_id'ye sahip olan bütün taskları 2d arraylist olarak dönder
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         Statement m_Statement = conn.createStatement();
         String employeeid = String.valueOf(employee_id);
@@ -202,7 +215,7 @@ public class DB {
 
     public static ArrayList<ArrayList<String>> show_all_tasks_filtered_by_group_name_and_project_name(String project_name, String group_name) throws SQLException {
         // task tablosunda verilen group_name'e ve project_name'e sahip olan bütün taskları 2d arraylist olarak dönder
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         Statement m_Statement = conn.createStatement();
         String query = "SELECT * FROM [Task] WHERE project_name="+"'"+project_name+"'"+ "AND group_name="+"'"+group_name+"'";
@@ -238,7 +251,7 @@ public class DB {
         // eğer verilen task_id'ye sahip olan task'ın employee_id'si uyuşuyorsa return true
         // uyuşmuyorsa return false
         // eğer verilen task_id task tablosunda yoksa return false
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String taskid = String.valueOf(task_id);
         String employeeid = String.valueOf(employee_id);
@@ -251,10 +264,9 @@ public class DB {
 
     }
 
-
     //Çalışıyor ama konsola 1 basıyor :D
     public static void update_task_status_to_done(int task_id) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
         String taskid = String.valueOf(task_id);
         System.out.println(taskid);
 
@@ -273,7 +285,7 @@ public class DB {
         // Eğer verilen task_id'ye sahip olan taskın project_name ve group_name'i aynıyse ve
         // henüz bir employee tarafından alınmadıysa return true
         // diğer durumlarda return false
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String taskid = String.valueOf(task_id);
         Statement m_Statement = conn.createStatement();
@@ -285,43 +297,12 @@ public class DB {
 
     }
 
-    public static ArrayList<ArrayList<String>> all_notes_filtered_by_project_name_and_group_name(String project_name, String group_name) throws SQLException {
-        // verilen project_name ve group_name'e sahip olan bütün notları 2d arraylist olarak dönder
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
-
-        Statement m_Statement = conn.createStatement();
-        String query = "SELECT * FROM [Note_] WHERE project_name="+"'"+project_name+"'"+ "AND group_name="+"'"+group_name+"'";
-
-
-        ResultSet m_ResultSet = m_Statement.executeQuery(query);
-
-        ArrayList<ArrayList<String>> notes = new ArrayList<ArrayList<String>>();
-
-
-        int i=0;
-        while (m_ResultSet.next()) {
-            notes.add(new ArrayList<String>());
-            notes.get(i).add(0,m_ResultSet.getString(1));
-            notes.get(i).add(1,m_ResultSet.getString(2));
-            notes.get(i).add(2,m_ResultSet.getString(3));
-            notes.get(i).add(3,m_ResultSet.getString(4));
-
-            i++;
-        }
-
-        return notes;
-
-
-
-
-    }
-
     public static void create_task(String project_name, String group_name, int user_id, int priority, String status, String deadline, String description, int employee_id) throws SQLException {
         // Input şu şekilde gelecek : DB.create_task(project_name, group_name, user_id, priority, "not done",deadline, description, -1);
         // employee_id yerine -1 gönderdim.
         // Kafana göre takıl
 
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String userid = String.valueOf(user_id);
         String employeeid = String.valueOf(employee_id);
@@ -349,7 +330,7 @@ public class DB {
 
     public static ArrayList<ArrayList<String>> all_tasks_filtered_by_manager_id(int manager_id) throws SQLException {
         // task'lar tablosunda manager_id'sine göre filtreme yap ve sonuçları 2d arraylist olarak returnla
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         Statement m_Statement = conn.createStatement();
         String managerid = String.valueOf(manager_id);
@@ -388,7 +369,7 @@ public class DB {
     public static boolean detete_task(int manager_id, int task_id) throws SQLException {
         // Eğer verilen task_id'ye sahip bir task varsa ve manager_id'si manager_id'ye eşitse sil ve true döndür
         // diğer durumlarda false dönder (manager id farklıysa veya böyle bir task hiç yoksa)
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
         String taskid = String.valueOf(task_id);
         String managerid = String.valueOf(manager_id);
 
@@ -407,7 +388,6 @@ public class DB {
 
     }
 
-
     public static boolean update_task(int task_id, int manager_id, String new_priority, String new_deadline, String new_description) throws SQLException {
         //Eğer verilen task_id'ye sahip bir task varsa ve manager_id'si manager_id'ye eşitse update et ve true döndür
         // diğer durumlarda false döndür
@@ -417,7 +397,7 @@ public class DB {
         String managerid = String.valueOf(manager_id);
 
 
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String sql = "UPDATE [Task] SET priority=?, deadline=?, description=? WHERE task_id="+"'"+taskid+"'"+" AND manager_id="+"'"+managerid+"'";
 
@@ -452,11 +432,65 @@ public class DB {
         return rowsUpdated > 0;
     }
 
+    public static void take_a_task(int task_id, int employee_id) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
+
+        String taskid = String.valueOf(task_id);
+
+
+        String query = "UPDATE [Task] SET employee_id=? WHERE task_id="+"'"+taskid+"'";
+
+        PreparedStatement preparedStatement = conn.prepareStatement(query);
+
+        preparedStatement.setInt(1, employee_id);
+
+
+        int rowsUpdated = preparedStatement.executeUpdate();
+
+
+
+    }
+
+
+
+
+
+    public static ArrayList<ArrayList<String>> all_notes_filtered_by_project_name_and_group_name(String project_name, String group_name) throws SQLException {
+        // verilen project_name ve group_name'e sahip olan bütün notları 2d arraylist olarak dönder
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
+
+        Statement m_Statement = conn.createStatement();
+        String query = "SELECT * FROM [Note_] WHERE project_name="+"'"+project_name+"'"+ "AND group_name="+"'"+group_name+"'";
+
+
+        ResultSet m_ResultSet = m_Statement.executeQuery(query);
+
+        ArrayList<ArrayList<String>> notes = new ArrayList<ArrayList<String>>();
+
+
+        int i=0;
+        while (m_ResultSet.next()) {
+            notes.add(new ArrayList<String>());
+            notes.get(i).add(0,m_ResultSet.getString(1));
+            notes.get(i).add(1,m_ResultSet.getString(2));
+            notes.get(i).add(2,m_ResultSet.getString(3));
+            notes.get(i).add(3,m_ResultSet.getString(4));
+
+            i++;
+        }
+
+        return notes;
+
+
+
+
+    }
+
 
     public static void create_note(String group_name, String project_name, String note_text) throws SQLException {
         // Her ne kadar yaratmak Alah'a mahsus olsa da sen de çok güzel bir şekilde
         // verilen bilgilere bağlı olarak note yaratabilirsin diye düşünüyorum
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String sql = "INSERT INTO [Note_] (group_name, project_name, note_text) VALUES (?, ?, ?)";
         //String sql = "INSERT INTO [Note_] (" + group_name+ ", " + project_name + ", " + note_text + ") VALUES (?, ?, ?)";
@@ -481,7 +515,7 @@ public class DB {
         String noteid = String.valueOf(note_id);
 
 
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String query = "DELETE FROM [Note_] WHERE note_id=" +"'"+ noteid +"'"+ " AND project_name=" +"'"+ project_name +"'"+ " AND group_name=" +"'"+ group_name+"'";
 
@@ -512,7 +546,7 @@ public class DB {
 
 
 
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
 
         String sql = "UPDATE [Note_] SET note_text=? WHERE project_name="+"'"+project_name+"'"+" AND note_id="+noteid;
 
@@ -526,45 +560,9 @@ public class DB {
     }
 
 
-    public static void create_project_group(String group_name, String project_name, int manager_id) throws SQLException {
-        // Her ne kadar yaratmak Alah'a mahsus olsa da sen de çok güzel bir şekilde
-        // verilen bilgilere bağlı olarak note yaratabilirsin diye düşünüyorum
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
-
-        String sql = "INSERT INTO [Project_Group] (project_name, group_name, manager_id) VALUES (?, ?, ?)";
-
-        String manageid = String.valueOf(manager_id);
-
-        PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, group_name);
-        statement.setString(2, project_name);
-        statement.setString(3, manageid);
-
-
-        int rowsInserted = statement.executeUpdate();
-        if (rowsInserted > 0) {
-            System.out.println("A new Project was inserted successfully!");
-        }
-    }
-
-    public static void take_a_task(int task_id, int employee_id) throws SQLException {
-        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:49702;databaseName=TaskManagement;integratedSecurity=true;");
-
-        String taskid = String.valueOf(task_id);
-
-
-        String query = "UPDATE [Task] SET employee_id=? WHERE task_id="+"'"+taskid+"'";
-
-        PreparedStatement preparedStatement = conn.prepareStatement(query);
-
-        preparedStatement.setInt(1, employee_id);
-
-
-        int rowsUpdated = preparedStatement.executeUpdate();
 
 
 
-    }
 
 
 
@@ -615,7 +613,21 @@ public class DB {
         }
     }
 
+    public static String RETURN_SPECIFIC_USER(String user_id) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:"+port+";databaseName=TaskManagement;integratedSecurity=true;");
+        Statement m_Statement = conn.createStatement();
+        String query = "SELECT ALL * FROM [User] WHERE user_id="+"'"+user_id+"'";
 
+        ResultSet m_ResultSet = m_Statement.executeQuery(query);
+        String a = "";
+
+        while (m_ResultSet.next()) {
+            System.out.println(m_ResultSet.getString(1) + ", " + m_ResultSet.getString(2) + ", " + m_ResultSet.getString(3) +
+                    "," + m_ResultSet.getString(4) + "," + m_ResultSet.getString(5) + " " + m_ResultSet.getString(6));
+        }
+
+        return a;
+    }
 
 
     public static void READ_SPECIFIC_TASK(Connection conn,String project_name,String group_name) throws SQLException {
