@@ -387,7 +387,7 @@ public class DB {
 
         Connection conn = DriverManager.getConnection("jdbc:sqlserver://localhost:" + port + ";databaseName=TaskManagement;integratedSecurity=true;");
 
-        String sql = "UPDATE [Task] SET priority=?, deadline=?, description=? WHERE task_id=" + "'" + taskid + "'" + " AND manager_id=" + "'" + managerid + "'";
+        String sql = "UPDATE [Task] SET priority=?, deadline=?, description=? WHERE task_id="+ taskid + " AND manager_id=" + managerid;
 
         String query = "SELECT * FROM [Task] WHERE task_id=" + taskid + " AND manager_id=" + managerid;
 
